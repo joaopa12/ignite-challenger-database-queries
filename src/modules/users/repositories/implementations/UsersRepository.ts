@@ -14,10 +14,10 @@ export class UsersRepository implements IUsersRepository {
   async findUserWithGamesById({
     user_id,
   }: IFindUserWithGamesDTO): Promise<User> {
-     const user = await this.repository.findOne({
-       where: { user_id },
-       relations: ['games']
-     })
+     const user = await this.repository.findOne(
+       user_id,
+       {relations: ['games']}
+     )
      
      return user as User
 }
@@ -29,6 +29,10 @@ export class UsersRepository implements IUsersRepository {
     first_name,
     last_name,
   }: IFindUserByFullNameDTO): Promise<User[] | undefined> {
-    return this.repository.query(''); 
+    return this.repository.query(`
+    SELECT * FROM users 
+    WHERE first_name ILIKE '%${first_name}%'
+    AND last_name ILIKE '%${last_name}%'
+    `); 
 }
 }
